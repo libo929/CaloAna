@@ -81,20 +81,23 @@ def drawEvent(evt):
     yDenArr = np.array(yDen)
     zDenArr = np.array(zDen)
 
-    axis.scatter(xArr, yArr, zArr, alpha=0.05, s=2, c='b')
+    axis.scatter(xArr, yArr, zArr, alpha=0.1, s=2, c='b')
     axis.scatter(xDenArr, yDenArr, zDenArr, alpha=0.9, s=6, c='r')
+    axis.set_xlabel('x (mm)')
+    axis.set_ylabel('y (mm)')
+    axis.set_zlabel('z (mm)')
     #plt.hist(hitsDensity)
     #plt.hist(neighborHits)
     #plt.hist(energyDensitiesArray)
     
-    #fig = plt.gcf()
-    #fig.savefig('fig.eps', format='eps', dpi=1000)
+    fig = plt.gcf()
+    fig.savefig('fig.pdf', format='pdf', dpi=1000)
 
     plt.show()
 
 
 if __name__=='__main__':
-        A = np.load('ecal1.npz', allow_pickle=True)
+        A = np.load('ecal2.npz', allow_pickle=True)
         evts = A['CaloEvts']
         
         canPrint = False 
@@ -104,3 +107,9 @@ if __name__=='__main__':
                 print('---> ', evt['evtNum'], evt['hitPosEn'])
 
             drawEvent(evt)
+
+            text = input('press enter to continue, or any other key to exit ')
+     
+            if text != '':
+                print('exit')
+                break
