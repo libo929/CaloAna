@@ -73,6 +73,7 @@ def drawEvent(evt):
 
     for i in range(0, len(hitsDensity)):
         if energyDensities[i] > 0.1:
+        #if energyDensities[i] > 0.5:
             xDen.append(X[i])
             yDen.append(Y[i])
             zDen.append(Z[i])
@@ -86,6 +87,9 @@ def drawEvent(evt):
     axis.set_xlabel('x (mm)')
     axis.set_ylabel('y (mm)')
     axis.set_zlabel('z (mm)')
+    axis.set_xlim(-200, 200)
+    axis.set_ylim(1800, 2100)
+    axis.set_zlim(-200, 200)
     #plt.hist(hitsDensity)
     #plt.hist(neighborHits)
     #plt.hist(energyDensitiesArray)
@@ -97,7 +101,9 @@ def drawEvent(evt):
 
 
 if __name__=='__main__':
-        A = np.load('ecal2.npz', allow_pickle=True)
+        #A = np.load('ecal1_50GeV.npz', allow_pickle=True)
+        #A = np.load('ecal2_25GeV.npz', allow_pickle=True)
+        A = np.load('ecal_pi0_30GeV.npz', allow_pickle=True)
         evts = A['CaloEvts']
         
         canPrint = False 
