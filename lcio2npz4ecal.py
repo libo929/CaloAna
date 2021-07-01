@@ -49,21 +49,20 @@ def readEvents(reader):
 
 
 if __name__=='__main__':
-	if len(sys.argv) == 2:
-		fileName = sys.argv[1]
+        if len(sys.argv) == 2:
+            fileName = sys.argv[1]
 	
-	if len(sys.argv) == 1:
-		fileName = "rec_REC2.slcio"
+        if len(sys.argv) == 1:
+            fileName = "rec_REC.slcio"
 	
-	reader = LcioReader( fileName )
-	print('Loaded file: ', fileName)
+        reader = LcioReader( fileName )
+        print('Loaded file: ', fileName)
 	
-	anEvtList = readEvents(reader)
-
+        anEvtList = readEvents(reader)
         anEvtArray = np.array(anEvtList, dtype=object)
-        np.savez('ecal2', CaloEvts=anEvtArray)
+        np.savez('ecal', CaloEvts=anEvtArray)
 
-        A = np.load('ecal2.npz', allow_pickle=True)
+        A = np.load('ecal.npz', allow_pickle=True)
         evts = A['CaloEvts']
         
         canPrint = False
