@@ -12,8 +12,8 @@ def makeEventContent(event):
     evtNum   = event.getEventNumber()
 
     nHit = hcalHits.getNumberOfElements()
-    #cellIdEncoding = hcalHits.getParameters().getStringVal( EVENT.LCIO.CellIDEncoding ) 
-    #idDecoder = UTIL.BitField64( cellIdEncoding )
+    cellIdEncoding = hcalHits.getParameters().getStringVal( EVENT.LCIO.CellIDEncoding ) 
+    idDecoder = UTIL.BitField64( cellIdEncoding )
 
     hitPosEn = []
 
@@ -21,10 +21,11 @@ def makeEventContent(event):
         caloHit = hcalHits.getElementAt( iHit )
         hitPos = caloHit.getPositionVec()
         hitEnergy = caloHit.getEnergy()
-        #cellID = long( caloHit.getCellID0() & 0xffffffff ) | ( long( caloHit.getCellID1() ) << 32 )
-        #idDecoder.setValue( cellID )
+        cellID = int( caloHit.getCellID0() & 0xffffffff ) | ( int( caloHit.getCellID1() ) << 32 )
+        idDecoder.setValue( cellID )
+        layer = int(idDecoder['layer'])
 
-        hitPosEn.append( [hitPos[0], hitPos[1], hitPos[2], hitEnergy] )
+        hitPosEn.append( [hitPos[0], hitPos[1], hitPos[2], hitEnergy, layer] )
 
     evtCollection = {'evtNum': evtNum, 'hitPosEn': hitPosEn}
 

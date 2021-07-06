@@ -66,7 +66,9 @@ def drawEvent(evt):
     
     energyDensitiesArray = np.array(energyDensities)   
 
-    thDensity = [0.8, 2, 3, 5]
+    #thDensity = [0.05, 0.1, 0.3, 0.6] # 30 GeV
+    #thDensity = [0.08, 0.2, 0.5, 0.8]
+    thDensity = [0.7]
 
 
     for threshold in thDensity: 
@@ -85,7 +87,7 @@ def drawEvent(evt):
         yDenArr = np.array(yDen)
         zDenArr = np.array(zDen)
 
-        axis = fig.add_subplot(221 + thDensity.index(threshold), projection='3d')
+        axis = fig.add_subplot(111 + thDensity.index(threshold), projection='3d')
 
         axis.scatter(xArr, yArr, zArr, alpha=0.05, s=2, c='b')
         axis.scatter(xDenArr, yDenArr, zDenArr, alpha=1, s=3, c='r')
