@@ -8,6 +8,23 @@ from pyLCIO import UTIL
 import sys
 
 def makeEventContent(event):
+
+    #-----------------------------MCP--------------------------------
+    mcpCollection = event.getCollection("MCParticle")
+
+    mcps = []
+
+    for mcp in mcpCollection:
+        pdg = mcp.getPDG()
+        energy = mcp.getEnergy()
+        vertex = mcp.getVertex()
+        endpoint = mcp.getEndpoint()
+        #print(pdg, energy, vertex[0], vertex[1], vertex[2])
+
+        mcps.append( [pdg, energy, vertex[0], vertex[1], vertex[2], endpoint[0], endpoint[1], endpoint[2]] )
+        
+
+    #-----------------------------Hit--------------------------------
     hcalHits = event.getCollection('EcalBarrelCollectionRec')
     evtNum   = event.getEventNumber()
 
@@ -27,7 +44,7 @@ def makeEventContent(event):
 
         hitPosEn.append( [hitPos[0], hitPos[1], hitPos[2], hitEnergy, layer] )
 
-    evtCollection = {'evtNum': evtNum, 'hitPosEn': hitPosEn}
+    evtCollection = {'evtNum': evtNum, 'mcp': mcps, 'hitPosEn': hitPosEn}
 
     #print(evtCollection['evtNum'], evtCollection['hitPosEn'], nHit)
 
