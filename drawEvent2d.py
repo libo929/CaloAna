@@ -8,12 +8,23 @@ from sklearn.neighbors import KDTree
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
+def plotMCP(vx, ep, plt):
+    for i in range(0, len(vx)):
+        x = [ vx[i][0], ep[i][0] ]
+        y = [ vx[i][1], ep[i][1] ]
+        z = [ vx[i][2], ep[i][2] ]
+
+        plt.plot(x, y, linestyle='dotted', color='g')
+
 
 #########################################
 def drawEvent(evt):
     print('Event: ', evt['evtNum'])
     
-    fig = plt.figure(figsize=(9, 9))
+    figSizeX = 18
+    figSizeY = figSizeX/4.
+
+    fig = plt.figure(figsize=(figSizeX, figSizeY))
 
     hitPosEn = evt['hitPosEn']
 
@@ -48,6 +59,19 @@ def drawEvent(evt):
 
     print('# of hits: ', len(hitsDensity))
 
+    #----------------mcp---------------------------
+    mcps = evt['mcp']
+
+    vx = [] # vertex
+    ep = [] # endpoint
+
+    for mcp in mcps:
+        if mcp[0]==22 and mcp[1]>0.3:
+            vx.append( [mcp[2], mcp[3], mcp[4]] )
+            ep.append( [mcp[5], mcp[6], mcp[7]] )
+            print('gamma E: ', mcp[1])
+
+    #----------------hit density---------------------------
     energyDensities = []
 
     for i in range(0, len(hitsDensity)):
@@ -89,14 +113,17 @@ def drawEvent(evt):
         yDenArr = np.array(yDen)
         zDenArr = np.array(zDen)
 
-        axis = fig.add_subplot(221 + thDensity.index(threshold))
+        axis = fig.add_subplot(141 + thDensity.index(threshold))
 
-        axis.scatter(xArr, yArr, alpha=0.05, s=2, c='b')
+        axis.scatter(xArr, yArr, alpha=0.3, s=2, c='b')
         axis.scatter(xDenArr, yDenArr, alpha=1, s=3, c='r')
         axis.set_xlabel('x (mm)')
         axis.set_ylabel('y (mm)')
         axis.set_xlim(-100, 100)
-        axis.set_ylim(1800, 2020)
+        axis.set_ylim(1760, 2030)
+
+        plotMCP(vx, ep, plt)
+
 
     #plt.hist(hitsDensity)
     #plt.hist(neighborHits)
