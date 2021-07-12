@@ -6,7 +6,15 @@ import numpy as np
 from sklearn.neighbors import KDTree
 
 from matplotlib import pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
+#from mpl_toolkits.mplot3d import Axes3D
+
+def plotMCP(vx, ep, plt):
+    for i in range(0, len(vx)):
+        x = [ vx[i][0], ep[i][0] ]
+        y = [ vx[i][1], ep[i][1] ]
+        z = [ vx[i][2], ep[i][2] ]
+
+        plt.plot(x, y, z, linestyle='dotted', color='g')
 
 
 #########################################
@@ -48,6 +56,19 @@ def drawEvent(evt):
 
     print('# of hits: ', len(hitsDensity))
 
+    #----------------mcp---------------------------
+    mcps = evt['mcp']
+
+    vx = [] # vertex
+    ep = [] # endpoint
+
+    for mcp in mcps:
+        if mcp[0]==22 and mcp[1]>0.3:
+            vx.append( [mcp[2], mcp[3], mcp[4]] )
+            ep.append( [mcp[5], mcp[6], mcp[7]] )
+            print('gamma E: ', mcp[1])
+
+    #----------------hit density---------------------------
     energyDensities = []
 
     for i in range(0, len(hitsDensity)):
@@ -66,9 +87,12 @@ def drawEvent(evt):
     
     energyDensitiesArray = np.array(energyDensities)   
 
-    #thDensity = [0.05, 0.1, 0.3, 0.6] # 30 GeV
-    #thDensity = [0.08, 0.2, 0.5, 0.8]
-    thDensity = [0.7]
+    #thDensity = [0.03, 0.08, 0.15, 0.40] # 30 GeV
+    #thDensity = [0.08, 0.2, 0.5, 0.8] # 50 GeV
+    #thDensity = [0.1, 0.8, 1.5, 4.] # 200 GeV
+    #thDensity = [1.5] # 200 GeV
+    #thDensity = [0.05, 0.1]
+    thDensity = [0.2]
 
 
     for threshold in thDensity: 
@@ -89,14 +113,17 @@ def drawEvent(evt):
 
         axis = fig.add_subplot(111 + thDensity.index(threshold), projection='3d')
 
-        axis.scatter(xArr, yArr, zArr, alpha=0.05, s=2, c='b')
+        axis.scatter(xArr, yArr, zArr, alpha=0.1, s=2, c='b')
         axis.scatter(xDenArr, yDenArr, zDenArr, alpha=1, s=3, c='r')
         axis.set_xlabel('x (mm)')
         axis.set_ylabel('y (mm)')
         axis.set_zlabel('z (mm)')
-        axis.set_xlim(-200, 200)
-        axis.set_ylim(1800, 2100)
-        axis.set_zlim(-200, 200)
+        axis.set_xlim(-100, 100)
+        axis.set_ylim(1760, 2030)
+        axis.set_zlim(-100, 100)
+
+        plotMCP(vx, ep, plt)
+
 
     #plt.hist(hitsDensity)
     #plt.hist(neighborHits)

@@ -90,9 +90,9 @@ def drawEvent(evt):
     
     energyDensitiesArray = np.array(energyDensities)   
 
-    #thDensity = [0.05, 0.1, 0.3, 0.6] # 30 GeV
+    thDensity = [0.03, 0.08, 0.15, 0.40] # 30 GeV
     #thDensity = [0.08, 0.2, 0.5, 0.8] # 50 GeV
-    thDensity = [0.1, 0.8, 1.5, 4.] # 200 GeV
+    #thDensity = [0.1, 0.8, 1.5, 4.] # 200 GeV
     #thDensity = [1.5] # 200 GeV
     #thDensity = [0.05, 0.1]
 
