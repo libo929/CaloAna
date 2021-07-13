@@ -96,7 +96,7 @@ def drawEvent(evt):
     #thDensity = [0.1, 0.8, 1.5, 4.] # 200 GeV
     #thDensity = [1.5] # 200 GeV
     #thDensity = [0.05, 0.1]
-    thDensity = [0.2]
+    thDensity = [0.5] # 50 GeV
 
 
     for threshold in thDensity: 
