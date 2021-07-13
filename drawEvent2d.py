@@ -45,6 +45,11 @@ def drawEvent(evt):
         Z.append(hpe[2])
         E.append(hpe[3])
 
+        #hitCont = hpe[5]
+
+        #for mcpe, ehit in hitCont.items():
+        #    print('     --->', mcpe, ehit)
+
         allHitPos.append([hpe[0], hpe[1], hpe[2]])
 
     xArr = np.array(X)
@@ -65,11 +70,10 @@ def drawEvent(evt):
     vx = [] # vertex
     ep = [] # endpoint
 
-    for mcp in mcps:
-        if mcp[0]==22 and mcp[1]>0.3:
+    for mcp in mcps.values():
             vx.append( [mcp[2], mcp[3], mcp[4]] )
             ep.append( [mcp[5], mcp[6], mcp[7]] )
-            print('gamma E: ', mcp[1])
+            print('PDG ', mcp[0], ', E: ', mcp[1])
 
     #----------------hit density---------------------------
     energyDensities = []
@@ -90,8 +94,8 @@ def drawEvent(evt):
     
     energyDensitiesArray = np.array(energyDensities)   
 
-    thDensity = [0.03, 0.08, 0.15, 0.40] # 30 GeV
-    #thDensity = [0.08, 0.2, 0.5, 0.8] # 50 GeV
+    #thDensity = [0.03, 0.08, 0.15, 0.40] # 30 GeV
+    thDensity = [0.08, 0.2, 0.5, 0.8] # 50 GeV
     #thDensity = [0.1, 0.8, 1.5, 4.] # 200 GeV
     #thDensity = [1.5] # 200 GeV
     #thDensity = [0.05, 0.1]
@@ -153,6 +157,7 @@ if __name__=='__main__':
 
             drawEvent(evt)
 
+            print('-------------------------------------------------------')
             text = input('press enter to continue, or any other key to exit ')
      
             if text != '':
