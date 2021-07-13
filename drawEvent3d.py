@@ -6,7 +6,7 @@ import numpy as np
 from sklearn.neighbors import KDTree
 
 from matplotlib import pyplot as plt
-#from mpl_toolkits.mplot3d import Axes3D
+from mpl_toolkits.mplot3d import Axes3D
 
 def plotMCP(vx, ep, plt):
     for i in range(0, len(vx)):
@@ -42,6 +42,11 @@ def drawEvent(evt):
         Z.append(hpe[2])
         E.append(hpe[3])
 
+        #hitCont = hpe[5]
+
+        #for mcpe, ehit in hitCont.items():
+        #    print('     --->', mcpe, ehit)
+
         allHitPos.append([hpe[0], hpe[1], hpe[2]])
 
     xArr = np.array(X)
@@ -62,11 +67,10 @@ def drawEvent(evt):
     vx = [] # vertex
     ep = [] # endpoint
 
-    for mcp in mcps:
-        if mcp[0]==22 and mcp[1]>0.3:
+    for mcp in mcps.values():
             vx.append( [mcp[2], mcp[3], mcp[4]] )
             ep.append( [mcp[5], mcp[6], mcp[7]] )
-            print('gamma E: ', mcp[1])
+            print('PDG ', mcp[0], ', E: ', mcp[1])
 
     #----------------hit density---------------------------
     energyDensities = []
@@ -153,6 +157,7 @@ if __name__=='__main__':
 
             drawEvent(evt)
 
+            print('-------------------------------------------------------')
             text = input('press enter to continue, or any other key to exit ')
      
             if text != '':

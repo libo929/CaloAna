@@ -9,19 +9,8 @@ import sys
 
 def makeEventContent(event):
 
-    #-----------------------------MCP--------------------------------
-    mcpCollection = event.getCollection("MCParticle")
-
-    mcps = []
-
-    for mcp in mcpCollection:
-        pdg = mcp.getPDG()
-        energy = mcp.getEnergy()
-        vertex = mcp.getVertex()
-        endpoint = mcp.getEndpoint()
-        #print(pdg, energy, vertex[0], vertex[1], vertex[2])
-
-        mcps.append( [pdg, energy, vertex[0], vertex[1], vertex[2], endpoint[0], endpoint[1], endpoint[2]] )
+    #-----------------------------MCP collection---------------------
+    mcps = {}
         
 
     #-----------------------------Hit--------------------------------
@@ -36,17 +25,57 @@ def makeEventContent(event):
 
     for iHit in range(0, nHit):
         caloHit = hcalHits.getElementAt( iHit )
+        simCaloHit = caloHit.getRawHit()
+        #print('cellID: ', simCaloHit.getCellID0(), simCaloHit.getCellID1(), 'hit energy: ', simCaloHit.getEnergy())
+
+        mcp4HitEnergy = {}
+
+        for i in range(0, simCaloHit.getNMCContributions()):
+            mcp = simCaloHit.getParticleCont(i)
+            mcpPDG = mcp.getPDG()
+            mcpEnergy = mcp.getEnergy()
+            hitEnergyCont = simCaloHit.getEnergyCont(i)
+
+            if mcp in mcp4HitEnergy.keys():
+               mcp4HitEnergy[mcp] += hitEnergyCont
+            else:
+               mcp4HitEnergy[mcp] = hitEnergyCont
+
+            #print( '---> contr: %5d' % i, ', MCP PDG: %5d' % mcpPDG, ', MCP energy: %12.5f' % mcpEnergy,
+            #            ', hit energy contr: %5e' % hitEnergyCont )
+
+        totalCont = 0.
+        hitCont = {}
+
+        for mcp, cont in mcp4HitEnergy.items():
+            totalCont += cont
+            hitCont[mcp.getEnergy()] = cont
+
+            pdg = mcp.getPDG()
+            energy = mcp.getEnergy()
+            vertex = mcp.getVertex()
+            endpoint = mcp.getEndpoint()
+            #print(pdg, energy, vertex[0], vertex[1], vertex[2])
+
+            if not mcp.getEnergy() in mcps.keys():
+                mcps[mcp.getEnergy()] = [ pdg, energy, vertex[0], vertex[1], vertex[2], endpoint[0], endpoint[1], endpoint[2] ]
+
+
+        if totalCont - simCaloHit.getEnergy() > 1.e-6:
+            print('warning: hit energy total less than recorded!')
+
         hitPos = caloHit.getPositionVec()
         hitEnergy = caloHit.getEnergy()
         cellID = int( caloHit.getCellID0() & 0xffffffff ) | ( int( caloHit.getCellID1() ) << 32 )
         idDecoder.setValue( cellID )
         layer = int(idDecoder['layer'])
 
-        hitPosEn.append( [hitPos[0], hitPos[1], hitPos[2], hitEnergy, layer] )
+        hitPosEn.append( [hitPos[0], hitPos[1], hitPos[2], hitEnergy, layer, hitCont] )
 
+        #print('-----------------------------------------------------------------------------------------')
+
+    #print(mcps.keys())
     evtCollection = {'evtNum': evtNum, 'mcp': mcps, 'hitPosEn': hitPosEn}
-
-    #print(evtCollection['evtNum'], evtCollection['hitPosEn'], nHit)
 
     return evtCollection
 
@@ -58,7 +87,7 @@ def readEvents(reader):
     for event in reader:
         evtContent = makeEventContent(event)
 
-        if evtContent['evtNum'] > 10000:
+        if evtContent['evtNum'] > 100000:
             break
 
         evtList.append(evtContent)
