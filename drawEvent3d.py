@@ -19,9 +19,7 @@ def plotMCP(vx, ep, plt):
 
 #########################################
 def drawEvent(evt):
-    print('Event: ', evt['evtNum'])
-    
-    fig = plt.figure(figsize=(9, 9))
+    fig = plt.figure(figsize=(18, 9))
 
     hitPosEn = evt['hitPosEn']
 
@@ -94,9 +92,10 @@ def drawEvent(evt):
     #thDensity = [0.03, 0.08, 0.15, 0.40] # 30 GeV
     #thDensity = [0.08, 0.2, 0.5, 0.8] # 50 GeV
     #thDensity = [0.1, 0.8, 1.5, 4.] # 200 GeV
+    thDensity = [0.1, 0.5, 1., 2.] # 200 GeV
     #thDensity = [1.5] # 200 GeV
     #thDensity = [0.05, 0.1]
-    thDensity = [0.5] # 50 GeV
+    #thDensity = [0.15, 1.2] # 50 GeV
 
 
     for threshold in thDensity: 
@@ -115,9 +114,9 @@ def drawEvent(evt):
         yDenArr = np.array(yDen)
         zDenArr = np.array(zDen)
 
-        axis = fig.add_subplot(111 + thDensity.index(threshold), projection='3d')
+        axis = fig.add_subplot(221 + thDensity.index(threshold), projection='3d')
 
-        axis.scatter(xArr, yArr, zArr, alpha=0.1, s=2, c='b')
+        #axis.scatter(xArr, yArr, zArr, alpha=0.05, s=2, c='b')
         axis.scatter(xDenArr, yDenArr, zDenArr, alpha=1, s=3, c='r')
         axis.set_xlabel('x (mm)')
         axis.set_ylabel('y (mm)')
@@ -151,15 +150,18 @@ if __name__=='__main__':
         
         canPrint = False 
 
-        for evt in evts:
-            if canPrint:
-                print('---> ', evt['evtNum'], evt['hitPosEn'])
+        text = ''
 
-            drawEvent(evt)
+        for evt in evts:
+            print('Event: ', evt['evtNum'])
+
+            text = input('press enter to draw event, s to skip, e/q to exit ')
+
+            if text != 'e' and text != 's' and text != 'q':
+                drawEvent(evt)
 
             print('-------------------------------------------------------')
-            text = input('press enter to continue, or any other key to exit ')
      
-            if text != '':
-                print('exit')
+            if text == 'e' or text == 'q':
+                print('Exit ...')
                 break
