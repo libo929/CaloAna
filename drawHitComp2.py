@@ -16,23 +16,8 @@ def plotMCP(vx, ep, plt):
 
         plt.plot(x, y, z, linestyle='dotted', color='g')
 
-
-#########################################
-def float2color(zero2one):
-    x = zero2one * 256 * 256 * 256
-    r = x % 256
-    g = ((x - r)/256 % 256)
-    b = ((x - r - g * 256)/(256*256) % 256)
-    r = round(float(r/256),2)
-    g = round(float(g/256),2)
-    b = round(float(b/256),2)
-    return (r,g,b) 
-
-
 #########################################
 def drawEvent(evt):
-    col = float2color(0.1)
-
     #----------------mcp---------------------------
     mcps = evt['mcp']
 
@@ -40,16 +25,23 @@ def drawEvent(evt):
     ep = [] # endpoint
 
     if len(mcps)!=2:
+        print('#MCP is not 2, return')
         return
+
+    mcpEnergy = []
 
     for mcp in mcps.values():
             vx.append( [mcp[2], mcp[3], mcp[4]] )
             ep.append( [mcp[5], mcp[6], mcp[7]] )
+            mcpEnergy.append(mcp[1])
             print('PDG ', mcp[0], ', E: ', mcp[1])
+
+    maxMcpEnergy = np.max(np.array(mcpEnergy))
+    #print('max: ', maxMcpEnergy)
 
     #----------------------------------------------
 
-    fig = plt.figure(figsize=(18, 9))
+    fig = plt.figure(figsize=(12, 8))
 
     hitPosEn = evt['hitPosEn']
 
@@ -57,83 +49,50 @@ def drawEvent(evt):
     Y = []
     Z = []
     E = []
-
-    allHitPos = []
+    ER = []
 
     for hpe in hitPosEn:
+
         if hpe[3] < 0.0:
             continue
        
-        print('---', hpe[0], hpe[1], hpe[2])
-        X.append(hpe[0])
-        Y.append(hpe[1])
-        Z.append(hpe[2])
-        E.append(hpe[3])
+        #print('---', hpe[0], hpe[1], hpe[2], hpe[3])
+        X.append(hpe[0]) # x
+        Y.append(hpe[1]) # y
+        Z.append(hpe[2]) # z
+        E.append(hpe[3]) # calibrated hit energy
+                         # hpe[4] : layer
 
         hitCont = hpe[5]
 
-        for mcpe, ehit in hitCont.items():
-            print('     --->', mcpe, ehit)
+        er = 0. # hit energy ratio of the MCP having the max energy
 
-        allHitPos.append([hpe[0], hpe[1], hpe[2]])
+        for mcpe, ehit in hitCont.items():
+            #print('     --->', mcpe, ehit)
+            if mcpe == maxMcpEnergy: 
+                er += ehit/hpe[3]
+
+        if hpe[4] > 19:
+            er *= 2.
+
+        ER.append(er)
 
     xArr = np.array(X)
     yArr = np.array(Y)
     zArr = np.array(Z)
     eArr = np.array(E)
+    erArr = np.array(ER)
+    print(np.max(erArr))
 
-    caloHitsArray = np.array(allHitPos)
-    calHitsTree = KDTree(caloHitsArray)
-    hitsDensity = calHitsTree.kernel_density(caloHitsArray[:], h=10, kernel='cosine')
-    neighborHits = calHitsTree.query_radius(caloHitsArray[:], r=5.)
-
-    print('# of hits: ', len(hitsDensity))
+    print('# of hits: ', len(E))
 
 
     #----------------hit density---------------------------
-    energyDensities = []
-
-    for i in range(0, len(hitsDensity)):
-        #print(caloHitsArray[i], hitsDensity[i], neighborHits[i])
-        neighbors = neighborHits[i]
-
-        energyDensity = 0.
-
-        for neighbor in neighbors:
-            #print(neighbor, eArr[neighbor])
-            energyDensity += eArr[neighbor]
-
-        energyDensities.append(energyDensity)
-
-        #print('------------')
-    
-    energyDensitiesArray = np.array(energyDensities)
-
-
-    energyDensitiesArrayNorm = energyDensitiesArray / np.max(energyDensitiesArray)
-
-
-    xDen = []
-    yDen = []
-    zDen = []
-
-    for i in range(0, len(hitsDensity)):
-            xDen.append(X[i])
-            yDen.append(Y[i])
-            zDen.append(Z[i])
-
-    xDenArr = np.array(xDen)
-    yDenArr = np.array(yDen)
-    zDenArr = np.array(zDen)
 
     axis = fig.add_subplot(111, projection='3d')
 
-    p = axis.scatter(xArr, yArr, zArr, alpha=1, s=energyDensitiesArrayNorm*5, 
-            c=energyDensitiesArrayNorm, cmap='rainbow')
+    p = axis.scatter(xArr, yArr, zArr, alpha=1, s=2, c=erArr/np.max(erArr), cmap='rainbow')
     
-    #mat = np.arange(0,10)
-    #cax = axis.matshow(mat, cmap='cool')
-    #axis.scatter(xDenArr, yDenArr, zDenArr, alpha=1, s=3, c=)
     fig.colorbar(p)
     axis.set_xlabel('x (mm)')
     axis.set_ylabel('y (mm)')
