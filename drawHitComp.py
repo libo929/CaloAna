@@ -106,8 +106,8 @@ def drawEvent(evt):
     #thDensity = [0.03, 0.08, 0.15, 0.40] # 30 GeV
     #thDensity = [0.08, 0.2, 0.5, 0.8] # 50 GeV
     #thDensity = [0.1, 0.8, 1.5, 4.] # 200 GeV
-    thDensity = [0.1, 0.5, 1., 2.] # 200 GeV
-    #thDensity = [1.5] # 200 GeV
+    #thDensity = [0.1, 0.5, 1., 2.] # 200 GeV
+    thDensity = [1.5] # 200 GeV
     #thDensity = [0.05, 0.1]
     #thDensity = [0.15, 1.2] # 50 GeV
 
@@ -131,13 +131,15 @@ def drawEvent(evt):
         yDenArr = np.array(yDen)
         zDenArr = np.array(zDen)
 
-        axis = fig.add_subplot(221 + thDensity.index(threshold), projection='3d')
+        axis = fig.add_subplot(111 + thDensity.index(threshold), projection='3d')
 
-        axis.scatter(xArr, yArr, zArr, alpha=1, s=2, c=energyDensitiesArrayNorm)
-        mat = np.arange(0,10)
-        cax = axis.matshow(mat, cmap='cool')
-        fig.colorbar(cax)
+        p = axis.scatter(xArr, yArr, zArr, alpha=1, s=energyDensitiesArrayNorm*5, 
+                c=energyDensitiesArrayNorm, cmap='rainbow')
+        
+        #mat = np.arange(0,10)
+        #cax = axis.matshow(mat, cmap='cool')
         #axis.scatter(xDenArr, yDenArr, zDenArr, alpha=1, s=3, c=)
+        fig.colorbar(p)
         axis.set_xlabel('x (mm)')
         axis.set_ylabel('y (mm)')
         axis.set_zlabel('z (mm)')
