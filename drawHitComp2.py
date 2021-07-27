@@ -86,12 +86,25 @@ def drawEvent(evt):
 
     print('# of hits: ', len(E))
 
+    hitsSize = []
+
+    for e in eArr:
+        s = 0.
+        if e > 0.1:
+            s = e * 10.
+
+        hitsSize.append(s)
+
+
+    hitsSizeArr = np.array(hitsSize)
+            
+
 
     #----------------hit density---------------------------
 
     axis = fig.add_subplot(111, projection='3d')
 
-    p = axis.scatter(xArr, yArr, zArr, alpha=1, s=2, c=erArr/np.max(erArr), cmap='rainbow')
+    p = axis.scatter(xArr, yArr, zArr, alpha=1, s=hitsSizeArr, c=erArr/np.max(erArr), cmap='rainbow')
     
     fig.colorbar(p)
     axis.set_xlabel('x (mm)')
