@@ -90,7 +90,9 @@ def drawEvent(evt):
 
     for e in eArr:
         s = 0.
-        if e > 0.1:
+        if e > 0.2: # 60 GeV
+        #if e > 0.1-0.1: # 20 GeV
+
             s = e * 10.
 
         hitsSize.append(s)

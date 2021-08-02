@@ -39,8 +39,10 @@ def drawEvent(evt):
 
     dx = ep[0][0] - ep[1][0]
     dy = ep[0][1] - ep[1][1]
+    dz = ep[0][2] - ep[1][2]
 
-    dxy = math.sqrt(dx * dx + dy * dy)
+    dxy = math.sqrt(dx * dx + dz * dz)
+    #print(dxy)
 
     return dxy
 
@@ -67,7 +69,7 @@ if __name__=='__main__':
 
         dxyArr = np.array( dxys )
 
-        plt.hist(dxyArr, range=(0, 60), bins=10, color='b')
+        plt.hist(dxyArr, range=(6, 12), bins=100, color='b')
 
         #fig = plt.gcf()
         #fig.savefig('fig.pdf', format='pdf', dpi=1000)
