@@ -26,7 +26,7 @@ def drawEvent(evt):
     ep = [] # endpoint
 
     if len(mcps)!=2:
-        print('#MCP is not 2, return')
+        #print('#MCP is not 2, return')
         return -1.
 
     #mcpEnergy = []
@@ -61,7 +61,7 @@ if __name__=='__main__':
         dxys = []
 
         for evt in evts:
-            print('Event: ', evt['evtNum'])
+            #print('Event: ', evt['evtNum'])
             dxy = drawEvent(evt)
 
             if dxy > 0:
